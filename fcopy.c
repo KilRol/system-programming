@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     if (argc != 3)
     {
         printf("Wrong number of arguments\n");
-        printf("Please, use ./[exec] [original_name] [copy_name]\n");
+        printf("Please, use ./<exec> <original_name> <copy_name>\n");
         return 0;
     }
 
