@@ -7,18 +7,21 @@
 
 int fcopy(char *source, char *dest)
 {
+    int err = 0;
     int fd = open(source, O_RDONLY);
     if (fd == -1)
     {
-        perror("File opening failed");
-        return -1;
+        err = errno;
+        puts("File opening failed");
+        return err;
     }
 
     int newfd = creat(dest, 0777);
     if (newfd == -1)
     {
-        perror("Copy creation failed");
-        return 0;
+        err = errno;
+        puts("Copy creation failed");
+        return err;
     }
 
     ssize_t ret;
@@ -34,11 +37,11 @@ int fcopy(char *source, char *dest)
             }
             else if (errno == EAGAIN)
             {
-                // do something useful
                 continue;
             }
-            perror("read");
-            break;
+            err = errno;
+            puts("read failed");
+            return err;
         }
 
         ssize_t wret;
@@ -52,13 +55,13 @@ int fcopy(char *source, char *dest)
                 {
                     continue;
                 }
-                perror("write");
-                break;
+                err = errno;
+                puts("write failed");
+                return err;
             }
             len -= wret;
         }
     }
-
     return 0;
 }
 
@@ -68,7 +71,7 @@ int main(int argc, char *argv[])
     {
         printf("Wrong number of arguments\n");
         printf("Please, use ./<exec> <original_name> <copy_name>\n");
-        return 0;
+        return -1;
     }
 
     fcopy(argv[1], argv[2]);
