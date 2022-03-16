@@ -9,6 +9,7 @@
 
 int get_dir_info(char *path, int depth)
 {
+    int err = 0;
     DIR *dir = opendir(path);
     struct dirent *st_dir;
 
@@ -33,14 +34,16 @@ int get_dir_info(char *path, int depth)
     }
     if (errno != 0)
     {
-        perror("readdir");
-        return -1;
+        err = errno;
+        puts("readdir failed");
+        return err;
     }
     return 0;
 }
 
 int main(int argc, char *argv[])
 {
+    int err = 0;
     char path[PATH_MAX];
 
     if (argc < 2)
@@ -63,8 +66,9 @@ int main(int argc, char *argv[])
 
     if (ret == -1)
     {
-        perror("stat");
-        return -1;
+        err = errno;
+        puts("stat failed");
+        return err;
     }
 
     if ((st.st_mode & S_IFMT) != S_IFDIR)
